@@ -1,6 +1,6 @@
-// src/app/chat/chat.component.ts
+// chat.component.ts
 import { Component, OnInit } from '@angular/core';
-import { WebsocketService } from '../websocket.service';
+import { WebSocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-chat',
@@ -9,28 +9,33 @@ import { WebsocketService } from '../websocket.service';
 })
 export class ChatComponent implements OnInit {
   messages: string[] = [];
-  inputMessage: string = '';
+  currentMessage: string = '';
 
-  constructor(private websocketService: WebsocketService) { }
+  constructor(private webSocketService: WebSocketService) {}
 
-  ngOnInit() {
-   // this.websocketService = this.websocketService.connect();
-
-    this.websocketService.getMessages().subscribe(message => {
-      console.log(message);
-
-      this.messages.push(message.message);
-      
+  ngOnInit(): void {
+    this.webSocketService.messages$.subscribe({
+      next: (message: string) => {
+        try {
+          const data = JSON.parse(message); // Deserialize the JSON string
+          this.currentMessage += data.message; // Append chunk to current message
+          // Optionally, push to messages array if you want to display multiple messages
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      },
+      error: (err: any) => console.error('WebSocket error:', err),
+      complete: () => console.log('WebSocket connection closed'),
     });
   }
 
-
-  sendMessage() {
-    if (this.inputMessage) {
-      console.log(this.inputMessage);
-      
-      this.websocketService.sendMessage(this.inputMessage);
-      this.inputMessage = '';
+  sendMessage(content: string): void {
+    if (content && content.trim()) {
+      const message = { content: content.trim() }; // Create message object
+      this.webSocketService.sendMessage(message); // Send message
+      this.currentMessage = ''; // Clear current message
+    } else {
+      console.error('Message content cannot be empty');
     }
   }
 }

@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { RouterModule } from '@angular/router'
-import { WebsocketService } from './websocket.service';
+import { WebSocketService } from './websocket.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,7 @@ import { WebsocketService } from './websocket.service';
     FormsModule, // Add FormsModule to imports
     RouterModule
   ],
-  providers: [WebsocketService],
+  providers: [WebSocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

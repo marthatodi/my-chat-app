@@ -1,27 +1,48 @@
-// src/app/websocket.service.ts
+// websocket.service.ts
 import { Injectable } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-providedIn: 'root'
+  providedIn: 'root'
 })
-export class WebsocketService {
-private socket$: WebSocketSubject<any>;
+export class WebSocketService {
+  private socket: WebSocket | null = null;
+  private messagesSubject = new Subject<string>();
 
-constructor() {
-this.socket$ = webSocket('ws://localhost:8080'); // Replace with your WebSocket server URL
-}
+  constructor() {
+    this.connect();
+  }
 
-sendMessage(message: any) {
-const serializedMessage = JSON.stringify(message);
-console.log(serializedMessage);
-// Serialize the message
-this.socket$.next(serializedMessage);
-}
+  private connect(): void {
+    this.socket = new WebSocket('ws://localhost:8080');
 
-getMessages(): Observable<any> {
-return this.socket$.asObservable();
-}
-}
+    this.socket.onmessage = (event) => {
+      this.messagesSubject.next(event.data);
+    };
 
+    this.socket.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    this.socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+  }
+
+  sendMessage(message: any): void {
+    if (this.socket) {
+      const serializedMessage = JSON.stringify(message); // Serialize the message
+      this.socket.send(serializedMessage);
+    } else {
+      console.error('WebSocket is not connected.');
+    }
+  }
+
+  get messages$(): Observable<string> {
+    return this.messagesSubject.asObservable();
+  }
+}
