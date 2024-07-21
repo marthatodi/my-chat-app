@@ -47,9 +47,3 @@ server.listen(8080, () => {
 console.log('WebSocket server is running on ws://localhost:8080');
 });
 
-
-
-// src/app/websocket.service.ts
-import { Injectable } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { Observable } from 'rxjs';
