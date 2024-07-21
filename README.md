@@ -1,6 +1,6 @@
 # MyChatApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.4 and Node. It is a small platform tha sends question to Chat gpt( model: 'gpt-3.5-turbo' ) , recieving and display the response from ChatGPT as it is being written, rather than waiting for the whole response to complete. This process simulate streaming by chunking the response and sending it incrementally via WebSocket.
 
 ## Development server
 
