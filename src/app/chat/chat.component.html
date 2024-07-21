@@ -1,0 +1,9 @@
+<!-- src/app/chat/chat.component.html -->
+<div>
+  <h2>Chat with GPT</h2>
+  <div *ngFor="let message of messages">
+    <p>{{ message }}</p>
+  </div>
+  <input [(ngModel)]="inputMessage" placeholder="Type your message" />
+  <button (click)="sendMessage()">Send</button>
+</div>
